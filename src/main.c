@@ -18,14 +18,17 @@ int main()
 {
 	struct Node* root = NULL;
 
-	root = insert_node(root, 50);
-	insert_node(root, 10);
-	insert_node(root, 190);
-	insert_node(root, 30);
-	insert_node(root, 60);
-	insert_node(root, 20);
+	int node_arr[20] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
 
-	search_node(root, 60);
+	root = insert_node(root, 10);
+	for(int i = 0; i < (sizeof(node_arr) / sizeof(int)); i++)
+	{
+		insert_node(root, node_arr[i]);
+	}
+
+	search_node(root, 18);
+	search_node(root, 1);
+	search_node(root, 9);
 
 	free_node(root);
 	return 0;
