@@ -10,6 +10,8 @@ struct Node
 
 struct Node* create_node(int value);
 struct Node* insert_node(struct Node* node, int value);
+struct Node* search_node(struct Node* node, int value);
+
 void free_node(struct Node* node);
 
 int main()
@@ -22,6 +24,8 @@ int main()
 	insert_node(root, 30);
 	insert_node(root, 60);
 	insert_node(root, 20);
+
+	search_node(root, 60);
 
 	free_node(root);
 	return 0;
@@ -55,6 +59,20 @@ struct Node* insert_node(struct Node* node, int value)
 	}
 
 	return node;
+}
+
+struct Node* search_node(struct Node* node, int target)
+{
+	if(node == NULL || node->key == target)
+	{
+		printf("Node was found with value: %d - target: %d\n", node->key, target);
+		return node;
+	}
+	if(node->key < target)
+	{
+		return search_node(node->right, target);
+	}
+	return search_node(node->left, target);
 }
 
 void free_node(struct Node* node)
