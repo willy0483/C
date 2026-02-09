@@ -1,55 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-struct Student
+struct Node
 {
-	int id;
-	char* name;
-	float grade;
+	int key;
+	struct Node* left;
+	struct Node* right;
 };
 
-void print_student(struct Student* student);
+struct Node* create_node(int value);
+struct Node* insert_node(struct Node* node, int value);
+void free_node(struct Node* node);
 
 int main()
 {
-	struct Student students[3];
+	struct Node* root = NULL;
 
-	for(int i = 0; i < 3; i++)
-	{
-		char buffer[20];
-		printf("Enter name for student %d: ", i);
-		if(fgets(buffer, sizeof(buffer), stdin) == NULL)
-		{
-			fprintf(stderr, "Error reading Name.\n");
-			exit(1);
-		}
-		buffer[strcspn(buffer, "\n")] = 0;
-		students[i].name = malloc(strlen(buffer) + 1);
-		if(students[i].name == NULL)
-		{
-			fprintf(stderr, "Memory allocation failed\n");
-			exit(1);
-		}
-		strcpy(students[i].name, buffer);
-		students[i].id = i + 1;
-		students[i].grade = (i + 1) * 1.5f;
-	}
+	root = insert_node(root, 50);
+	insert_node(root, 10);
+	insert_node(root, 190);
+	insert_node(root, 30);
+	insert_node(root, 60);
+	insert_node(root, 20);
 
-	for(int i = 0; i < 3; i++)
-	{
-		print_student(&students[i]);
-	}
-
-	for(int i = 0; i < 3; i++)
-	{
-		free(students[i].name);
-	}
-
+	free_node(root);
 	return 0;
 }
 
-void print_student(struct Student* student)
+struct Node* create_node(int value)
 {
-	printf("ID: %d\nName: %s\nGrade: %.1f\n\n", student->id, student->name, student->grade);
+	struct Node* temp = malloc(sizeof(struct Node));
+
+	temp->key = value;
+	temp->left = NULL;
+	temp->right = NULL;
+
+	return temp;
+}
+
+struct Node* insert_node(struct Node* node, int value)
+{
+	if(node == NULL)
+	{
+		node = create_node(value);
+		printf("Node: %d - was created\n", value);
+	}
+	if(value < node->key)
+	{
+		node->left = insert_node(node->left, value);
+	}
+	if(value > node->key)
+	{
+		node->right = insert_node(node->right, value);
+	}
+
+	return node;
+}
+
+void free_node(struct Node* node)
+{
+	if(node == NULL)
+	{
+		return;
+	}
+	free_node(node->left);
+	free_node(node->right);
+	printf("Node: %d - free\n", node->key);
+	free(node);
 }
