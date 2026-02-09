@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct Student
 {
@@ -11,13 +13,25 @@ void print_student(struct Student* student);
 
 int main()
 {
-
-	char name_arr[3][10] = { "Willaim", "Fin", "Bob" };
 	struct Student students[3];
 
 	for(int i = 0; i < 3; i++)
 	{
-		students[i].name = name_arr[i];
+		char buffer[20];
+		printf("Enter name for student %d: ", i);
+		if(fgets(buffer, sizeof(buffer), stdin) == NULL)
+		{
+			fprintf(stderr, "Error reading Name.\n");
+			exit(1);
+		}
+		buffer[strcspn(buffer, "\n")] = 0;
+		students[i].name = malloc(strlen(buffer) + 1);
+		if(students[i].name == NULL)
+		{
+			fprintf(stderr, "Memory allocation failed\n");
+			exit(1);
+		}
+		strcpy(students[i].name, buffer);
 		students[i].id = i + 1;
 		students[i].grade = (i + 1) * 1.5f;
 	}
@@ -25,6 +39,11 @@ int main()
 	for(int i = 0; i < 3; i++)
 	{
 		print_student(&students[i]);
+	}
+
+	for(int i = 0; i < 3; i++)
+	{
+		free(students[i].name);
 	}
 
 	return 0;
