@@ -6,17 +6,19 @@ CFLAGS = -Wall -g $(INCDIRS) $(OPT)
 SRCDIR   = src
 BUILDDIR = build
 
-CFILES = $(SRCDIR)/main.c
-OBJECTS = $(BUILDDIR)/main.o
+MODULES = node
+CFILES = $(SRCDIR)/main.c $(foreach module,$(MODULES),$(wildcard $(SRCDIR)/$(module)/*.c))
+OBJECTS = $(patsubst %.c, $(BUILDDIR)/%.o, $(notdir $(CFILES)))
+BINARY = $(BUILDDIR)/tree
 
-BINARY = $(BUILDDIR)/origins
+VPATH = $(dir $(CFILES))
 
 all: $(BINARY)
 
 $(BINARY): $(OBJECTS) | $(BUILDDIR)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
+$(BUILDDIR)/%.o: %.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 $(BUILDDIR):
@@ -24,3 +26,7 @@ $(BUILDDIR):
 
 clean:
 	rm -rf $(BUILDDIR)
+
+debug:
+	@echo "Source files: $(CFILES)"
+	@echo "Object files: $(OBJECTS)"
